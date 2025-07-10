@@ -1,10 +1,14 @@
-import './styles/App.css';
+import { BrowserRouter } from 'react-router-dom';
+import { Providers } from './providers';
+import { AppRouter } from './router';
 
 function App() {
   return (
-    <>
-      <h1>Home</h1>
-    </>
+    <BrowserRouter>
+      <Providers>
+        <AppRouter />
+      </Providers>
+    </BrowserRouter>
   );
 }
 
