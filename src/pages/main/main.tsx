@@ -1,8 +1,11 @@
 import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { TextSelection } from '../../features/text-selection';
 
 export const Main: FC = () => {
+  const { t } = useTranslation('main');
+
   return (
     <Box
       sx={{
@@ -13,62 +16,8 @@ export const Main: FC = () => {
         width: '800px',
       }}
     >
-      <Typography>
-        React components receive data and return what should appear on the
-        screen. You can pass them new data in response to an interaction, like
-        when the user types into an input. React will then update the screen to
-        match the new data. React components receive data and return what should
-        appear on the screen. You can pass them new data in response to an
-        interaction, like when the user types into an input. React will then
-        update the screen to match the new data. React components receive data
-        and return what should appear on the screen. You can pass them new data
-        in response to an interaction, like when the user types into an input.
-        React will then update the screen to match the new data. React
-        components receive data and return what should appear on the screen. You
-        can pass them new data in response to an interaction, like when the user
-        types into an input. React will then update the screen to match the new
-        data. React components receive data and return what should appear on the
-        screen. You can pass them new data in response to an interaction, like
-        when the user types into an input. React will then update the screen to
-        match the new data. React components receive data and return what should
-        appear on the screen. You can pass them new data in response to an
-        interaction, like when the user types into an input. React will then
-        update the screen to match the new data. React components receive data
-        and return what should appear on the screen. You can pass them new data
-        in response to an interaction, like when the user types into an input.
-        React will then update the screen to match the new data. React
-        components receive data and return what should appear on the screen. You
-        can pass them new data in response to an interaction, like when the user
-        types into an input. React will then update the screen to match the new
-        data. React components receive data and return what should appear on the
-        screen. You can pass them new data in response to an interaction, like
-        when the user types into an input. React will then update the screen to
-        match the new data. React components receive data and return what should
-        appear on the screen. You can pass them new data in response to an
-        interaction, like when the user types into an input. React will then
-        update the screen to match the new data. React components receive data
-        and return what should appear on the screen. You can pass them new data
-        in response to an interaction, like when the user types into an input.
-        React will then update the screen to match the new data. React
-        components receive data and return what should appear on the screen. You
-        can pass them new data in response to an interaction, like when the user
-        types into an input. React will then update the screen to match the new
-        data. React components receive data and return what should appear on the
-        screen. You can pass them new data in response to an interaction, like
-        when the user types into an input. React will then update the screen to
-        match the new data. React components receive data and return what should
-        appear on the screen. You can pass them new data in response to an
-        interaction, like when the user types into an input. React will then
-        update the screen to match the new data. React components receive data
-        and return what should appear on the screen. You can pass them new data
-        in response to an interaction, like when the user types into an input.
-        React will then update the screen to match the new data. React
-        components receive data and return what should appear on the screen. You
-        can pass them new data in response to an interaction, like when the user
-        types into an input. React will then update the screen to match the new
-        data.
-      </Typography>
       <TextSelection />
+      <Typography>{t('main text')}</Typography>
     </Box>
   );
 };
