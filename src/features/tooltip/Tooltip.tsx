@@ -1,24 +1,22 @@
-import { useRef, useEffect, useState, type FC } from "react";
-import { Paper, Typography, IconButton, Box, Fade } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { useRef, useEffect, useState, type FC } from 'react';
+import { Paper, Typography, IconButton, Box, Fade } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { useSelector } from 'react-redux';
+import {
+  getPosition,
+  getTextSelected,
+} from '../text-selection/model/selectors';
 
 export interface TooltipProps {
-  text: string;
-  position: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
   onClose: () => void;
 }
 
-export const Tooltip: FC<TooltipProps> = ({
-  text,
-  position,
-  onClose,
-}) => {
+export const Tooltip: FC<TooltipProps> = ({ onClose }) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
+
+  const position = useSelector(getPosition);
+  const text = useSelector(getTextSelected);
+
   const [adjustedPosition, setAdjustedPosition] = useState({ top: 0, left: 0 });
   const [visible, setVisible] = useState(false);
 
@@ -28,8 +26,8 @@ export const Tooltip: FC<TooltipProps> = ({
     const tooltipWidth = tooltipRef.current.offsetWidth;
     const tooltipHeight = tooltipRef.current.offsetHeight;
 
-    let top = position.y;
-    let left = position.x + position.width / 2 - tooltipWidth / 2;
+    let top = position?.y;
+    let left = position?.x + position?.width / 2 - tooltipWidth / 2;
 
     if (left + tooltipWidth > window.innerWidth) {
       left = window.innerWidth - tooltipWidth - 10;
@@ -60,8 +58,8 @@ export const Tooltip: FC<TooltipProps> = ({
     setVisible(true);
     calculatePosition();
 
-    window.addEventListener("resize", calculatePosition);
-    return () => window.removeEventListener("resize", calculatePosition);
+    window.addEventListener('resize', calculatePosition);
+    return () => window.removeEventListener('resize', calculatePosition);
   }, [position]);
 
   return (
@@ -70,19 +68,19 @@ export const Tooltip: FC<TooltipProps> = ({
         ref={tooltipRef}
         elevation={3}
         sx={{
-          position: "absolute",
+          position: 'absolute',
           top: adjustedPosition.top,
           left: adjustedPosition.left,
           zIndex: 9999,
           minWidth: 200,
           maxWidth: 300,
-          maxHeight: "80vh",
-          overflowY: "auto",
+          maxHeight: '80vh',
+          overflowY: 'auto',
           p: 2,
-          bgcolor: "background.paper",
-          borderRadius: "8px",
-          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
-          transition: "opacity 0.3s, transform 0.3s",
+          bgcolor: 'background.paper',
+          borderRadius: '8px',
+          boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.15)',
+          transition: 'opacity 0.3s, transform 0.3s',
         }}
       >
         <Box display="flex" justifyContent="space-between" alignItems="center">
