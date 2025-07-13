@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, type FC } from "react";
 import { Paper, Typography, IconButton, Box, Fade } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -13,7 +13,7 @@ export interface TooltipProps {
   onClose: () => void;
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({
+export const Tooltip: FC<TooltipProps> = ({
   text,
   position,
   onClose,
@@ -33,14 +33,24 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
     if (left + tooltipWidth > window.innerWidth) {
       left = window.innerWidth - tooltipWidth - 10;
-    }
-
-    if (left < 0) {
+    } else if (left < 0) {
       left = 10;
     }
 
-    if (top + tooltipHeight > window.innerHeight + window.scrollY) {
+    const isBottomOverflow =
+      top + tooltipHeight > window.innerHeight + window.scrollY;
+    const isTopOverflow = top - tooltipHeight < window.scrollY;
+
+    if (isBottomOverflow) {
       top = position.y - tooltipHeight - 20;
+    }
+
+    if (isTopOverflow || top < window.scrollY) {
+      top = window.scrollY + 10;
+    }
+
+    if (top + tooltipHeight > window.innerHeight + window.scrollY) {
+      top = window.innerHeight + window.scrollY - tooltipHeight - 10;
     }
 
     setAdjustedPosition({ top, left });
@@ -66,6 +76,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
           zIndex: 9999,
           minWidth: 200,
           maxWidth: 300,
+          maxHeight: "80vh",
+          overflowY: "auto",
           p: 2,
           bgcolor: "background.paper",
           borderRadius: "8px",
