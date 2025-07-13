@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, type FC } from "react";
 import { Paper, Typography, IconButton, Box, Fade } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { TranslationLanguageSelector } from "../translation-language-selector/ui";
 
 export interface TooltipProps {
   text: string;
@@ -13,11 +14,7 @@ export interface TooltipProps {
   onClose: () => void;
 }
 
-export const Tooltip: FC<TooltipProps> = ({
-  text,
-  position,
-  onClose,
-}) => {
+export const Tooltip: FC<TooltipProps> = ({ text, position, onClose }) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [adjustedPosition, setAdjustedPosition] = useState({ top: 0, left: 0 });
   const [visible, setVisible] = useState(false);
@@ -73,9 +70,9 @@ export const Tooltip: FC<TooltipProps> = ({
           position: "absolute",
           top: adjustedPosition.top,
           left: adjustedPosition.left,
-          zIndex: 9999,
-          minWidth: 200,
-          maxWidth: 300,
+          zIndex: 11,
+          minWidth: 300,
+          maxWidth: 400,
           maxHeight: "80vh",
           overflowY: "auto",
           p: 2,
@@ -98,6 +95,10 @@ export const Tooltip: FC<TooltipProps> = ({
           >
             <CloseIcon fontSize="small" />
           </IconButton>
+        </Box>
+
+        <Box mt={1.5} mb={1.5}>
+          <TranslationLanguageSelector />
         </Box>
 
         <Typography variant="body1" mt={1}>

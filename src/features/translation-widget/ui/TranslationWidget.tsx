@@ -64,7 +64,6 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
         position: "fixed",
         top: position.y,
         left: position.x,
-        zIndex: 9999,
         minWidth: 400,
         maxWidth: 600,
         p: 3,
