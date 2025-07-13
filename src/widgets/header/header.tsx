@@ -1,22 +1,22 @@
 import { useState, type FC } from 'react';
-import { 
-  AppBar, 
-  Toolbar, 
-  Box, 
-  IconButton, 
-  Tooltip, 
-  styled 
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  IconButton,
+  Tooltip,
+  styled,
 } from '@mui/material';
-import { TranslationLanguageSelector } from '../../features/translation-language-selector/ui';
 import PersonIcon from '@mui/icons-material/Person';
 import { TranslationWidget } from '../../features/translation-widget';
+import { LanguageSelector } from '@/features/language-selector/ui';
 
 const HeaderContainer = styled(Toolbar)({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   width: '100%',
-  padding: '10px 16px', 
+  padding: '10px 16px',
 });
 
 const AssistantButton = styled(IconButton)(({ theme }) => ({
@@ -33,7 +33,7 @@ const AssistantButton = styled(IconButton)(({ theme }) => ({
   '& span': {
     fontSize: '0.875rem',
     fontWeight: 500,
-  }
+  },
 }));
 
 export const Header: FC = () => {
@@ -43,7 +43,7 @@ export const Header: FC = () => {
     <AppBar position="static">
       <HeaderContainer>
         <Box>
-          <TranslationLanguageSelector />
+          <LanguageSelector />
         </Box>
 
         <Box>
