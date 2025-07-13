@@ -1,6 +1,6 @@
-import type { FC } from 'react';
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { GB, RU, FR } from "country-flag-icons/react/3x2";
 import {
   Box,
   FormControl,
@@ -10,35 +10,66 @@ import {
   IconButton,
   Stack,
   Typography,
-} from '@mui/material';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+} from "@mui/material";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import type { JSX } from "@emotion/react/jsx-runtime";
 
-import type { LanguageCode } from './model/types';
-import { DEFAULT_SOURCE_LANG, DEFAULT_TARGET_LANG, LANGUAGES } from '../lib/constance';
+type LanguageCode = "en" | "ru" | "fr";
 
-export const TranslationLanguageSelector: FC = () => {
+interface Language {
+  code: LanguageCode;
+  label: string;
+  icon: JSX.Element;
+  shortLabel: string;
+}
+
+const LANGUAGES: Language[] = [
+  {
+    code: "en",
+    label: "English",
+    icon: <GB style={{ width: 20, height: 15 }} />,
+    shortLabel: "EN",
+  },
+  {
+    code: "ru",
+    label: "Russian",
+    icon: <RU style={{ width: 20, height: 15 }} />,
+    shortLabel: "RU",
+  },
+  {
+    code: "fr",
+    label: "French",
+    icon: <FR style={{ width: 20, height: 15 }} />,
+    shortLabel: "FR",
+  },
+];
+
+export const TranslationLanguageSelector = () => {
   const { i18n } = useTranslation();
   const [languagePair, setLanguagePair] = useState({
-    source: DEFAULT_SOURCE_LANG,
-    target: DEFAULT_TARGET_LANG,
+    source: "en" as LanguageCode,
+    target: "ru" as LanguageCode,
   });
 
   useEffect(() => {
     i18n.changeLanguage(languagePair.source);
   }, [languagePair.source, i18n]);
 
-  const handleSourceChange = (event: SelectChangeEvent<LanguageCode>) => {
-    const newSource = event.target.value as LanguageCode;
-    setLanguagePair(prev => ({
+  const handleSourceChange = (e: SelectChangeEvent<LanguageCode>) => {
+    const newSource = e.target.value as LanguageCode;
+    setLanguagePair((prev) => ({
       source: newSource,
-      target: newSource === prev.target ? findAlternativeTarget(newSource) : prev.target,
+      target:
+        newSource === prev.target
+          ? LANGUAGES.find((l) => l.code !== newSource)?.code || "ru"
+          : prev.target,
     }));
   };
 
-  const handleTargetChange = (event: SelectChangeEvent<LanguageCode>) => {
-    setLanguagePair(prev => ({
+  const handleTargetChange = (e: SelectChangeEvent<LanguageCode>) => {
+    setLanguagePair((prev) => ({
       ...prev,
-      target: event.target.value as LanguageCode,
+      target: e.target.value as LanguageCode,
     }));
   };
 
@@ -49,59 +80,73 @@ export const TranslationLanguageSelector: FC = () => {
     });
   };
 
-  const findAlternativeTarget = (sourceLang: LanguageCode): LanguageCode => {
-    return LANGUAGES.find(lang => lang.code !== sourceLang)?.code || DEFAULT_TARGET_LANG;
-  };
-
   return (
-    <Stack direction="row" alignItems="center" spacing={2}>
-      <Box>
-        <FormControl size="small">
-          <Select
-            value={languagePair.source}
-            onChange={handleSourceChange}
-            renderValue={(value) => value.toUpperCase()}
-          >
-            {LANGUAGES.map((lang) => (
-              <MenuItem 
-                key={`source-${lang.code}`} 
-                value={lang.code}
-                disabled={lang.code === languagePair.target}
-              >
+    <Stack direction="row" alignItems="center" spacing={2} sx={{ p: 1 }}>
+      <FormControl size="small" variant="outlined">
+        <Typography variant="caption" sx={{ mb: 0.5, textAlign: "center" }}>
+          From
+        </Typography>
+        <Select
+          value={languagePair.source}
+          onChange={handleSourceChange}
+          renderValue={() => (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {LANGUAGES.find((l) => l.code === languagePair.source)?.icon}
+              <span>{languagePair.source.toUpperCase()}</span>
+            </Box>
+          )}
+        >
+          {LANGUAGES.map((lang) => (
+            <MenuItem
+              key={`src-${lang.code}`}
+              value={lang.code}
+              disabled={lang.code === languagePair.target}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {lang.icon}
                 {lang.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
+              </Box>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-      <IconButton 
+      <IconButton
         onClick={swapLanguages}
         size="small"
-        sx={{ alignSelf: 'flex-end', mb: 0.5 }}
+        sx={{ alignSelf: "flex-end", mb: 0.5 }}
       >
-        <SwapHorizIcon fontSize="small" />
+        <SwapHorizIcon />
       </IconButton>
 
-      <Box>
-        <FormControl size="small">
-          <Select
-            value={languagePair.target}
-            onChange={handleTargetChange}
-            renderValue={(value) => value.toUpperCase()}
-          >
-            {LANGUAGES.map((lang) => (
-              <MenuItem 
-                key={`target-${lang.code}`} 
-                value={lang.code}
-                disabled={lang.code === languagePair.source}
-              >
+      <FormControl size="small" variant="outlined">
+        <Typography variant="caption" sx={{ mb: 0.5, textAlign: "center" }}>
+          To
+        </Typography>
+        <Select
+          value={languagePair.target}
+          onChange={handleTargetChange}
+          renderValue={() => (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {LANGUAGES.find((l) => l.code === languagePair.target)?.icon}
+              <span>{languagePair.target.toUpperCase()}</span>
+            </Box>
+          )}
+        >
+          {LANGUAGES.map((lang) => (
+            <MenuItem
+              key={`tgt-${lang.code}`}
+              value={lang.code}
+              disabled={lang.code === languagePair.source}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {lang.icon}
                 {lang.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
+              </Box>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Stack>
   );
 };
