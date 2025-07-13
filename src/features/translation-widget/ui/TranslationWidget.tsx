@@ -9,6 +9,7 @@ import {
   FormControl,
   MenuItem,
   Select,
+  type SelectChangeEvent,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
@@ -59,7 +60,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
   onClose,
   onTranslate,
 }) => {
-  const widgetRef = React.useRef<HTMLDivElement>(null);
+    const widgetRef = React.useRef<HTMLDivElement>(null);
   const [sourceText, setSourceText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
   const [languagePair, setLanguagePair] = useState({
@@ -106,9 +107,9 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
         y: window.innerHeight / 2 - height / 2,
       });
     }
-  }, []);
+  }, [setPosition]);
 
-  const handleSourceChange = (event: any) => {
+  const handleSourceChange = (event: SelectChangeEvent<LanguageCode>) => {
     const newSource = event.target.value as LanguageCode;
     setLanguagePair((prev) => ({
       source: newSource,
@@ -119,7 +120,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
     }));
   };
 
-  const handleTargetChange = (event: any) => {
+  const handleTargetChange = (event: SelectChangeEvent<LanguageCode>) => {
     setLanguagePair((prev) => ({
       ...prev,
       target: event.target.value as LanguageCode,
@@ -200,7 +201,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
         </FormControl>
 
         <IconButton onClick={swapLanguages} size="small">
-          <SwapHorizIcon /> {/* Теперь иконка будет отображаться */}
+          <SwapHorizIcon />
         </IconButton>
 
         <FormControl variant="outlined" size="small" fullWidth>
