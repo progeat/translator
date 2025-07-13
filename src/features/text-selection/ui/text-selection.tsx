@@ -1,59 +1,76 @@
+import { translate } from '@/shared/lib/translation';
 import { Box } from '@mui/material';
 import { useEffect, type FC } from 'react';
-import { Tooltip } from '../../tooltip/Tooltip';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { textSelectorActions } from '../model/slice/text-selector-slice';
+import { Tooltip } from '../../tooltip/Tooltip';
 import { getPosition, getTextSelected } from '../model/selectors';
+import { textSelectorActions } from '../model/slice/text-selector-slice';
 
 export const TextSelection: FC = () => {
-  const dispatch = useDispatch();
-  const selection = useSelector(getTextSelected);
-  const position = useSelector(getPosition);
+	const { i18n } = useTranslation();
 
-  const onSelectStart = () => {
-    dispatch(textSelectorActions.setTextSelected(null));
-    dispatch(textSelectorActions.setPosition(null));
-  };
+	const dispatch = useDispatch();
+	const selection = useSelector(getTextSelected);
+	const position = useSelector(getPosition);
 
-  const onMouseUp = () => {
-    const activeSelection = document.getSelection();
-    if (!activeSelection) return;
+	const onSelectStart = () => {
+		dispatch(textSelectorActions.setTextSelected(null));
+		dispatch(textSelectorActions.setPosition(null));
+	};
 
-    const text = activeSelection.toString().trim();
-    if (!text) {
-      dispatch(textSelectorActions.setTextSelected(null));
-      dispatch(textSelectorActions.setPosition(null));
-      return;
-    }
+	const onMouseUp = async () => {
+		const activeSelection = document.getSelection();
+		if (!activeSelection) return;
 
-    const range = activeSelection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
+		const text = activeSelection.toString().trim();
+		if (!text) {
+			dispatch(textSelectorActions.setTextSelected(null));
+			dispatch(textSelectorActions.setPosition(null));
+			return;
+		}
 
-    dispatch(textSelectorActions.setTextSelected(text));
-    dispatch(
-      textSelectorActions.setPosition({
-        x: rect.left,
-        y: rect.top + window.scrollY,
-        width: rect.width,
-        height: rect.height,
-      })
-    );
-  };
+		try {
+			const { translations } = await translate({
+				sourceLanguageCode: i18n.language,
+				targetLanguageCode: 'en',
+				texts: [text],
+			});
+			const translatedText = translations.map(item => item.text).join();
+			dispatch(textSelectorActions.setTranslatedText(translatedText));
+		} catch (error) {
+			dispatch(textSelectorActions.setTranslatedText(null));
+			console.error(error);
+		}
 
-  useEffect(() => {
-    document.addEventListener('selectstart', onSelectStart);
-    document.addEventListener('mouseup', onMouseUp);
+		const range = activeSelection.getRangeAt(0);
+		const rect = range.getBoundingClientRect();
 
-    return () => {
-      document.removeEventListener('selectstart', onSelectStart);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-  }, []);
+		dispatch(textSelectorActions.setTextSelected(text));
+		dispatch(
+			textSelectorActions.setPosition({
+				x: rect.left,
+				y: rect.top + window.scrollY,
+				width: rect.width,
+				height: rect.height,
+			})
+		);
+	};
 
-  const handleClose = () => {
-    dispatch(textSelectorActions.setTextSelected(null));
-    dispatch(textSelectorActions.setPosition(null));
-  };
+	useEffect(() => {
+		document.addEventListener('selectstart', onSelectStart);
+		document.addEventListener('mouseup', onMouseUp);
+
+		return () => {
+			document.removeEventListener('selectstart', onSelectStart);
+			document.removeEventListener('mouseup', onMouseUp);
+		};
+	}, []);
+
+	const handleClose = () => {
+		dispatch(textSelectorActions.setTextSelected(null));
+		dispatch(textSelectorActions.setPosition(null));
+	};
 
   return (
     <Box>{selection && position && <Tooltip onClose={handleClose} />}</Box>
