@@ -10,4 +10,19 @@ export default defineConfig({
 			'@': path.resolve(__dirname, './src'),
 		},
 	},
+	server: {
+		proxy: {
+			'/yandex-translate-api': {
+				target: 'https://translate.api.cloud.yandex.net',
+				changeOrigin: true,
+				rewrite: path => path.replace(/^\/yandex-translate-api/, ''),
+			},
+			'/yandex-tts-api': {
+				target: 'https://tts.api.cloud.yandex.net',
+				changeOrigin: true,
+				rewrite: path => path.replace(/^\/yandex-tts-api/, ''),
+				secure: true,
+			},
+		},
+	},
 });
