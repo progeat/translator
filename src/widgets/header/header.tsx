@@ -10,6 +10,7 @@ import {
 import PersonIcon from '@mui/icons-material/Person';
 import { TranslationWidget } from '../../features/translation-widget';
 import { LanguageSelector } from '@/features/language-selector/ui';
+import { translate } from '@/shared/lib/translation';
 
 const HeaderContainer = styled(Toolbar)({
   display: 'flex',
@@ -56,7 +57,12 @@ export const Header: FC = () => {
         </Box>
       </HeaderContainer>
 
-      {widgetOpen && <TranslationWidget onClose={() => setWidgetOpen(false)} />}
+      {widgetOpen && (
+        <TranslationWidget
+          onTranslate={translate}
+          onClose={() => setWidgetOpen(false)}
+        />
+      )}
     </AppBar>
   );
 };

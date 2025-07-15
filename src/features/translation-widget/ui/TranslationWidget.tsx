@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   Paper,
   Typography,
@@ -10,14 +10,14 @@ import {
   MenuItem,
   Select,
   type SelectChangeEvent,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import { useDrag } from "../lib/useDrag";
-import { GB, RU, FR } from "country-flag-icons/react/3x2";
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import { useDrag } from '../lib/useDrag';
+import { GB, RU, FR } from 'country-flag-icons/react/3x2';
 
-type LanguageCode = "en" | "ru" | "fr";
+type LanguageCode = 'en' | 'ru' | 'fr';
 
 interface Language {
   code: LanguageCode;
@@ -26,46 +26,52 @@ interface Language {
   shortLabel: string;
 }
 
+type TranslateParams = {
+  texts: string[];
+  sourceLanguageCode: string;
+  targetLanguageCode: string;
+};
+
+interface TranslateResponse {
+  translations: { text: string }[];
+}
+
 const LANGUAGES: Language[] = [
   {
-    code: "en",
-    label: "English",
+    code: 'en',
+    label: 'English',
     icon: <GB style={{ width: 20, height: 15 }} />,
-    shortLabel: "EN",
+    shortLabel: 'EN',
   },
   {
-    code: "ru",
-    label: "Russian",
+    code: 'ru',
+    label: 'Russian',
     icon: <RU style={{ width: 20, height: 15 }} />,
-    shortLabel: "RU",
+    shortLabel: 'RU',
   },
   {
-    code: "fr",
-    label: "French",
+    code: 'fr',
+    label: 'French',
     icon: <FR style={{ width: 20, height: 15 }} />,
-    shortLabel: "FR",
+    shortLabel: 'FR',
   },
 ];
 
 export interface TranslationWidgetProps {
   onClose: () => void;
-  onTranslate: (
-    text: string,
-    from: LanguageCode,
-    to: LanguageCode
-  ) => Promise<string>;
+  onTranslate: (params: TranslateParams) => Promise<TranslateResponse>;
 }
 
 export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
   onClose,
   onTranslate,
 }) => {
-    const widgetRef = React.useRef<HTMLDivElement>(null);
-  const [sourceText, setSourceText] = useState("");
-  const [translatedText, setTranslatedText] = useState("");
+  const widgetRef = React.useRef<HTMLDivElement>(null);
+  const [sourceText, setSourceText] = useState('');
+  const [translatedText, setTranslatedText] = useState('');
   const [languagePair, setLanguagePair] = useState({
-    source: "en" as LanguageCode,
-    target: "ru" as LanguageCode,
+    source: 'en' as LanguageCode,
+    target: 'ru' as LanguageCode,
   });
   const [isTranslating, setIsTranslating] = useState(false);
 
@@ -73,21 +79,25 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
 
   const handleTranslate = async () => {
     if (!sourceText.trim()) {
-      setTranslatedText("");
+      setTranslatedText('');
       return;
     }
 
     setIsTranslating(true);
     try {
-      const result = await onTranslate(
-        sourceText,
-        languagePair.source,
-        languagePair.target
-      );
+      const translations = await onTranslate({
+        texts: [sourceText],
+        sourceLanguageCode: languagePair.source,
+        targetLanguageCode: languagePair.target,
+      });
+      const result = translations.translations[0].text;
+
+      console.log('result', result);
+
       setTranslatedText(result);
     } catch (error) {
-      console.error("Translation error:", error);
-      setTranslatedText("Ошибка перевода");
+      console.error('Translation error:', error);
+      setTranslatedText('Ошибка перевода');
     } finally {
       setIsTranslating(false);
     }
@@ -115,7 +125,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
       source: newSource,
       target:
         newSource === prev.target
-          ? LANGUAGES.find((l) => l.code !== newSource)?.code || "ru"
+          ? LANGUAGES.find((l) => l.code !== newSource)?.code || 'ru'
           : prev.target,
     }));
   };
@@ -133,23 +143,22 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
       target: languagePair.source,
     });
   };
-  
 
   return (
     <Paper
       ref={widgetRef}
       sx={{
-        position: "fixed",
+        position: 'fixed',
         top: position.y,
         left: position.x,
-        zIndex: 10, 
+        zIndex: 10,
         minWidth: 400,
         maxWidth: 600,
         p: 3,
-        borderRadius: "12px",
-        boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.2)",
-        cursor: "grab",
-        "&:active": { cursor: "grabbing" },
+        borderRadius: '12px',
+        boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.2)',
+        cursor: 'grab',
+        '&:active': { cursor: 'grabbing' },
       }}
     >
       <Box
@@ -159,7 +168,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
         onMouseDown={handleMouseDown}
       >
         <Box display="flex" alignItems="center">
-          <DragIndicatorIcon sx={{ mr: 1, color: "action.active" }} />
+          <DragIndicatorIcon sx={{ mr: 1, color: 'action.active' }} />
           <Typography variant="h6" fontWeight="bold">
             Переводчик
           </Typography>
@@ -178,7 +187,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
               PaperProps: {
                 sx: {
                   maxHeight: 300,
-                  "& .MuiMenuItem-root": {
+                  '& .MuiMenuItem-root': {
                     minHeight: 48,
                   },
                 },
@@ -212,7 +221,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
               PaperProps: {
                 sx: {
                   maxHeight: 300,
-                  "& .MuiMenuItem-root": {
+                  '& .MuiMenuItem-root': {
                     minHeight: 48,
                   },
                 },
@@ -253,7 +262,7 @@ export const TranslationWidget: React.FC<TranslationWidgetProps> = ({
           multiline
           rows={3}
           fullWidth
-          value={isTranslating ? "Перевод..." : translatedText}
+          value={isTranslating ? 'Перевод...' : translatedText}
           InputProps={{
             readOnly: true,
             endAdornment: isTranslating && <CircularProgress size={24} />,
